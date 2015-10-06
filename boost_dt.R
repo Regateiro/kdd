@@ -1,7 +1,6 @@
 # Install packages
 install.packages("adabag")
 
-
 # Load libraries
 library(adabag)
 
@@ -10,6 +9,8 @@ data.train = read.csv('training.csv', TRUE, ';')
 data.test = read.csv('test.csv', TRUE, ';')
 
 data.train$STATUS <- as.factor(data.train$STATUS)
+# predict expects the label to be present to build the confusion matrix... I just used ones
+data.test$STATUS <- rep(1, 50)
 
 
 # Decision Tree with boosting
@@ -23,6 +24,6 @@ prediction.boost_dt <- predict(model.boost_dt, newdata=data.test, type="class")
 out <- "boost_dt.out"
 if (file.exists(out)) file.remove(out)
 write("Id,STATUS", file = out, append=TRUE)
-for(i in 1:length(prediction.boost_dt)) {
-    write(paste(i, prediction.boost_dt[i], sep = ","), file = out, append=TRUE)
+for(i in 1:length(prediction.boost_dt$class)) {
+    write(paste(i, prediction.boost_dt$class[i], sep = ","), file = out, append=TRUE)
 }
