@@ -5,8 +5,10 @@ install.packages("adabag")
 library(adabag)
 
 # Load CSV
+#setwd('C:\\Users\\BlueMoon\\Documents\\GitHub\\kdd')
 data.train <- read.csv('training.csv', TRUE, ';')
 #data.test <- read.csv('test.csv', TRUE, ';')
+
 data.train$STATUS <- as.factor(data.train$STATUS)
 data.test <- data.train[-(0:75),]
 data.train <- data.train[(0:75),]
@@ -24,3 +26,4 @@ model.boost_dt <- boosting(STATUS ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 +
 prediction.boost_dt <- predict(model.boost_dt, newdata=data.test, type="class")
 
 print(prediction.boost_dt$confusion)
+print(prediction.boost_dt)
