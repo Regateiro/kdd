@@ -6,8 +6,6 @@ install.packages("randomForest")
 library(adabag)
 library(randomForest)
 
-setwd('C:\\Users\\DiogoJosé\\Documents\\kdd')
-
 # Load CSV
 data.train <- read.csv('training.csv', TRUE, ';')
 data.test <- read.csv('test.csv', TRUE, ';')
