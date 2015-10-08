@@ -5,7 +5,6 @@ install.packages("adabag")
 library(adabag)
 
 # Load CSV
-#setwd('C:\\Users\\BlueMoon\\Documents\\GitHub\\kdd')
 data.train <- read.csv('training.csv', TRUE, ';')
 #data.test <- read.csv('test.csv', TRUE, ';')
 
