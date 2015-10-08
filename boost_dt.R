@@ -10,7 +10,7 @@ data.test <- read.csv('test.csv', TRUE, ';')
 
 data.train$STATUS <- as.factor(data.train$STATUS)
 # predict expects the label to be present to build the confusion matrix... I just used ones
-data.test$STATUS <- as.factor(rep(1, 50))
+data.test$STATUS <- as.factor(c(rep(1, 25),rep(-1,25)))
 
 # Decision Tree with boosting
 model.boost_dt <- boosting(STATUS ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + 
