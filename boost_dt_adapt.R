@@ -8,21 +8,103 @@ library(adabag)
 data.train <- read.csv('training.csv', TRUE, ';')
 #data.test <- read.csv('test.csv', TRUE, ';')
 
+# Pre-processing
 data.train$STATUS <- as.factor(data.train$STATUS)
-data.test <- data.train[-(0:75),]
-data.train <- data.train[(0:75),]
+data.train$ID <- NULL
 
-# predict expects the label to be present to build the confusion matrix... I just used ones
-# data.test$STATUS <- as.factor(rep(1, 50))
-
+# Essure consistent results
+set.seed(1234)
 
 # Decision Tree with boosting
-model.boost_dt <- boosting(STATUS ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + 
-                                 X11 + X12 + X13 + X14 + X15 + X16 + X17 + X18 + X19 + 
-                                 X20 + X21 + X22 + X23 + X24 + X25 + X26 + X27 + X28 + 
-                                 X29 + X30, data = data.train, coeflearn="Zhu")
+prediction.boost_dt <- boosting.cv(STATUS ~ X4, data = data.train, mfinal = 40)
 
-prediction.boost_dt <- predict(model.boost_dt, newdata=data.test, type="class")
+# print(prediction.boost_dt$confusion)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
 
-print(prediction.boost_dt$confusion)
-print(prediction.boost_dt)
+prediction.boost_dt <- boosting.cv(STATUS ~ X1 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X2 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X3 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X4 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X5 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X6 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X7 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X8 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X9 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X11 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X12 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X13 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X14 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X15 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X16 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X17 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X18 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X19 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X20 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X21 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X22 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X23 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X24 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X25 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X26 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X27 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X28 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X29 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
+prediction.boost_dt <- boosting.cv(STATUS ~ X30 + X10, data = data.train, mfinal = 40)
+print(sum(diag(prediction.boost_dt$confusion))/sum(prediction.boost_dt$confusion))
+
