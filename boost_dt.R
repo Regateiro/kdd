@@ -14,6 +14,8 @@ data.test$STATUS <- as.factor(c(rep(1, 25),rep(-1,25)))
 
 # Decision Tree with boosting
 model.boost_dt <- boosting(STATUS ~ X10 + X28 + X11 + X26, data = data.train)
+# 1 9 24 29
+
 
 prediction.boost_dt <- predict(model.boost_dt, newdata=data.test, type="class")
 

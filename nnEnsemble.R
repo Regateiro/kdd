@@ -12,6 +12,32 @@ test$STATUS <- as.factor(c(rep(0, 50)))
 d=d[,c(2:32)]
 #print(summary(d))
 
+remove_outliers <- function(x, val, na.rm = TRUE, ...) {
+  qnt <- quantile(x, probs=c(val, 1-val), na.rm = na.rm, ...)
+  H <- 1.5 * IQR(x, na.rm = na.rm)
+  y <- x
+  y[x < (qnt[1] - H)] <- NA
+  y[x > (qnt[2] + H)] <- NA
+  y
+}
+
+attributes=colnames(d)[c(2:31)]
+for(i in 1:length(attributes)){
+	d[[attributes[i]]]=remove_outliers(d[[attributes[i]]], 0.05)
+}
+#remove outliers
+#d <- d[complete.cases(d), ]
+#replace outliers
+for(i in 1:length(attributes)){
+	avg = mean(d[[attributes[i]]], na.rm=TRUE)
+	for(j in 1:length(d[[attributes[i]]])){
+		if(is.na(d[[attributes[i]]][j])){
+			d[[attributes[i]]][j]=avg
+		}
+	}
+}
+
+
 # MLP
 NNmine=mining(STATUS~.,d,model="mlpe",Runs=5,method=c("kfold",3),search="heuristic5",feat="s")
 NN=fit(STATUS~.,d,model="mlpe",search=NNmine$mpar)
@@ -72,6 +98,7 @@ for(i in 1:length(P$STATUS)) {
     P$STATUS[i] <- ifelse(P$STATUS[i] > 0,1,-1)
 }
 write.csv(P,"results.csv", row.names=FALSE) # save output and predictions
+#REMOVE OUTLIERS
 
 #mpause("Show average MAE metric:")
 #eNN=mmetric(NN,metric="MAE")

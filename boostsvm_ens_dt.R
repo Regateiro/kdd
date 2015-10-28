@@ -21,6 +21,7 @@ prediction.boost_dt <- predict(model.boost_dt, newdata=data.test, type="class")
 
 # SVM
 model.svm <- svm(STATUS ~ X24 + X18 + X23 + X5 + X9, data = data.train, probability=TRUE, kernel="radial")
+#24 9 23    1 11 (RBF)
 
 prediction.svm <- predict(model.svm, newdata=data.test, probability=TRUE)
 
