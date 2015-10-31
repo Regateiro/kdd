@@ -25,12 +25,15 @@ data.test$X49 <- data.test$X12 * data.test$X17
 data.test$X52 <- data.test$X17 * data.test$X19
 
 # Decision Tree with boosting
+# model.boost_dt <- boosting(STATUS ~ X10 + X28 + X11 + X26, data = data.train)
 model.boost_dt <- boosting(STATUS ~ X1 + X2 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13 + X14 + X15 + X16 + X17 + X18 + X19 + X20 + X21 + X22 + X23 + X24 + X25 + X26 + X27 + X28 + X29 + X30, data = data.train)
 
 prediction.boost_dt <- predict(model.boost_dt, newdata=data.test, type="class")
 
 # SVM
+# model.svm <- svm(STATUS ~ X24 + X18 + X23 + X5 + X9, data = data.train, probability=TRUE, kernel="radial")
 model.svm <- svm(STATUS ~ X24 + X18 + X52 + X15 + X23, data = data.train, probability=TRUE)
+#24 9 23    1 11 (RBF)
 
 prediction.svm <- predict(model.svm, newdata=data.test, probability=TRUE)
 

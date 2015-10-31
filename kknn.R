@@ -27,15 +27,13 @@ fit.train1 <- train.kknn(STATUS ~ ., data.train, kmax = 15,
     kernel = c("triangular", "rectangular", "epanechnikov", "optimal"), 
     distance = 1)
 #table(predict(fit.train1, data.test), data.test$STATUS)
-predictions <- predict(fit.train1, data.test)
+res$fit <- predict(fit.train1, data.test)
 
 # move from regression to classification
 predictions <- array(0,50)
 for(i in 1:length(predictions)) {
     predictions[i] <- ifelse(res$fit[i]>0,1,-1)
 }
-
-#sum(pr.test==cl.test)/length(cl.test)
 
 out <- "results.csv"
 if (file.exists(out)) file.remove(out)
