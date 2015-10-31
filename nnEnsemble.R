@@ -4,12 +4,70 @@ library(party)
 library(rminer) 
 library(adabag)
 
-setwd('C:\\Users\\BlueMoon\\Documents\\GitHub\\kdd')
+#setwd('C:\\Users\\BlueMoon\\Documents\\GitHub\\kdd')
 
 d=read.csv('training.csv', TRUE, ';')
 test=read.csv('test.csv', TRUE, ';')
+
+# Add new features
+d$X31 <- d$X1 * d$X22
+d$X32 <- d$X1 * d$X28
+d$X33 <- d$X3 * d$X10
+d$X34 <- d$X3 * d$X18
+d$X35 <- d$X3 * d$X22
+d$X36 <- d$X3 * d$X28
+d$X37 <- d$X6 * d$X7
+d$X38 <- d$X6 * d$X8
+d$X39 <- d$X6 * d$X18
+d$X40 <- d$X7 * d$X12
+d$X41 <- d$X7 * d$X19
+d$X42 <- d$X7 * d$X24
+d$X43 <- d$X7 * d$X30
+d$X44 <- d$X8 * d$X12
+d$X45 <- d$X8 * d$X19
+d$X46 <- d$X8 * d$X23
+d$X47 <- d$X8 * d$X24
+d$X48 <- d$X8 * d$X30
+d$X49 <- d$X12 * d$X17
+d$X50 <- d$X12 * d$X18
+d$X51 <- d$X13 * d$X21
+d$X52 <- d$X17 * d$X19
+d$X53 <- d$X18 * d$X19
+d$X54 <- d$X18 * d$X30
+d$X55 <- d$X21 * d$X23
+d$X56 <- d$X23 * d$X25
+d$X57 <- d$X23 * d$X26
+
+test$X31 <- test$X1 * test$X22
+test$X32 <- test$X1 * test$X28
+test$X33 <- test$X3 * test$X10
+test$X34 <- test$X3 * test$X18
+test$X35 <- test$X3 * test$X22
+test$X36 <- test$X3 * test$X28
+test$X37 <- test$X6 * test$X7
+test$X38 <- test$X6 * test$X8
+test$X39 <- test$X6 * test$X18
+test$X40 <- test$X7 * test$X12
+test$X41 <- test$X7 * test$X19
+test$X42 <- test$X7 * test$X24
+test$X43 <- test$X7 * test$X30
+test$X44 <- test$X8 * test$X12
+test$X45 <- test$X8 * test$X19
+test$X46 <- test$X8 * test$X23
+test$X47 <- test$X8 * test$X24
+test$X48 <- test$X8 * test$X30
+test$X49 <- test$X12 * test$X17
+test$X50 <- test$X12 * test$X18
+test$X51 <- test$X13 * test$X21
+test$X52 <- test$X17 * test$X19
+test$X53 <- test$X18 * test$X19
+test$X54 <- test$X18 * test$X30
+test$X55 <- test$X21 * test$X23
+test$X56 <- test$X23 * test$X25
+test$X57 <- test$X23 * test$X26
+
 test$STATUS <- as.factor(c(rep(0, 50)))
-d=d[,c(2:32)]
+d=d[,c(2:length(d))]
 #print(summary(d))
 
 remove_outliers <- function(x, val, na.rm = TRUE, ...) {
@@ -21,7 +79,7 @@ remove_outliers <- function(x, val, na.rm = TRUE, ...) {
   y
 }
 
-attributes=colnames(d)[c(2:31)]
+attributes=colnames(d)[c(2:length(d))]
 for(i in 1:length(attributes)){
 	d[[attributes[i]]]=remove_outliers(d[[attributes[i]]], 0.05)
 }
