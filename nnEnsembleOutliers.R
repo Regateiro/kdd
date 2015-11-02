@@ -80,71 +80,123 @@ remove_outliers <- function(x, val, na.rm = TRUE, ...) {
 }
 
 attributes=colnames(d)[c(2:length(d))]
-d.r <- d
+d.o <- d
 for(i in 1:length(attributes)){
-	d.r[[attributes[i]]]=remove_outliers(d[[attributes[i]]], 0.05)
+	d.o[[attributes[i]]]=remove_outliers(d.o[[attributes[i]]], 0.05)
 }
 #remove outliers
-d.n <- d[complete.cases(d.r), ]
-d.o <- d[!complete.cases(d.r), ]
+d.n <- d[complete.cases(d.o), ]
+d.r <- d[!complete.cases(d.o), ]
 
-test.r <- test
+test.o <- test
 for(i in 1:length(attributes)){
-	test.r[[attributes[i]]]=remove_outliers(test[[attributes[i]]], 0.05)
+	test.o[[attributes[i]]]=remove_outliers(test.o[[attributes[i]]], 0.05)
 }
 #remove outliers
-test.n <- test[complete.cases(test.r), ]
-test.o <- test[!complete.cases(test.r), ]
+test.n <- test[complete.cases(test.o), ]
+test.r <- test[!complete.cases(test.o), ]
 
-#replace outliers
-#for(i in 1:length(attributes)){
-#	avg = mean(d[[attributes[i]]], na.rm=TRUE)
-#	for(j in 1:length(d[[attributes[i]]])){
-#		if(is.na(d[[attributes[i]]][j])){
-#			d[[attributes[i]]][j]=avg
-#		}
-#	}
-#}
 
 
 # MLP
-NNmine=mining(STATUS~.,d,model="mlpe",Runs=5,method=c("kfold",3),search="heuristic5",feat="s")
-NN=fit(STATUS~.,d,model="mlpe",search=NNmine$mpar)
-PNN=predict(NN,test)
+NNmine.n=mining(STATUS~.,d.n,model="mlpe",Runs=5,method=c("kfold",3),search="heuristic5",feat="s")
+NN.n=fit(STATUS~.,d.n,model="mlpe",search=NNmine.n$mpar)
+PNN.n=predict(NN.n,test.n)
+
+NNmine.r=mining(STATUS~.,d.r,model="mlpe",Runs=5,method=c("kfold",3),search="heuristic5",feat="s")
+NN.r=fit(STATUS~.,d.r,model="mlpe",search=NNmine.r$mpar)
+PNN.r=predict(NN.r,test.r)
 
 # SVM
-SVmine=mining(STATUS~.,d,model="ksvm",Runs=5,method=c("kfold",3),search="heuristic5",f="s")
-SV=fit(STATUS~.,d,model="ksvm",search=SVmine$mpar) # fit the SVM 
-PSVM=predict(SV,test)
+SVmine.n=mining(STATUS~.,d.n,model="ksvm",Runs=5,method=c("kfold",3),search="heuristic5",f="s")
+SV.n=fit(STATUS~.,d.n,model="ksvm",search=SVmine.n$mpar) # fit the SVM 
+PSVM.n=predict(SV.n,test.n)
+
+SVmine.r=mining(STATUS~.,d.r,model="ksvm",Runs=5,method=c("kfold",3),search="heuristic5",f="s")
+SV.r=fit(STATUS~.,d.r,model="ksvm",search=SVmine.r$mpar) # fit the SVM 
+PSVM.r=predict(SV.r,test.r)
 
 # CIF
-CIF <- cforest(STATUS~., data = d, controls=cforest_unbiased(ntree=100, mtry=3))
-PCIF<- predict(CIF, test, OOB=TRUE, type = "response")
+CIF.n <- cforest(STATUS~., data = d.n, controls=cforest_unbiased(ntree=100, mtry=3))
+PCIF.n <- predict(CIF.n, test.n, OOB=TRUE, type = "response")
+
+CIF.r <- cforest(STATUS~., data = d.r, controls=cforest_unbiased(ntree=100, mtry=3))
+PCIF.r <- predict(CIF.r, test.r, OOB=TRUE, type = "response")
 
 # RF
-d$STATUS <- as.factor(d$STATUS)
-RF=fit(STATUS~.,d,model="randomforest") # fit a random forest
-PRFu=predict(RF,test)
-PRF=c(1:50)
-for(i in 1:length(PRFu[,1])) {
-    PRF[i] <- ifelse(PRFu[i,1] < PRFu[i,2],PRFu[i,2]-PRFu[i,1],-(PRFu[i,1]-PRFu[i,2]))
+d.n$STATUS <- as.factor(d.n$STATUS)
+RF.n=fit(STATUS~.,d.n,model="randomforest") # fit a random forest
+PRFu.n=predict(RF.n,test.n)
+PRF.n=c(1:50)
+for(i in 1:length(PRFu.n[,1])) {
+    PRF.n[i] <- ifelse(PRFu.n[i,1] < PRFu.n[i,2],PRFu.n[i,2]-PRFu.n[i,1],-(PRFu.n[i,1]-PRFu.n[i,2]))
+}
+
+d.r$STATUS <- as.factor(d.r$STATUS)
+RF.r=fit(STATUS~.,d.r,model="randomforest") # fit a random forest
+PRFu.r=predict(RF.r,test.r)
+PRF.r=c(1:50)
+for(i in 1:length(PRFu.r[,1])) {
+    PRF.r[i] <- ifelse(PRFu.r[i,1] < PRFu.r[i,2],PRFu.r[i,2]-PRFu.r[i,1],-(PRFu.r[i,1]-PRFu.r[i,2]))
 }
 
 # kNN
-KNNmine=mining(STATUS~.,d,model="kknn",Runs=5,method=c("kfold",3),search="heuristic5",f="s")
-KNN=fit(STATUS~.,d,model="kknn",search=SVmine$mpar) 
-PKNN=predict(KNN,test)
+KNNmine.n=mining(STATUS~.,d.n,model="kknn",Runs=5,method=c("kfold",3),search="heuristic5",f="s")
+KNN.n=fit(STATUS~.,d.n,model="kknn",search=KNNmine.n$mpar) 
+PKNN.n=predict(KNN.n,test.n)
+
+KNNmine.r=mining(STATUS~.,d.r,model="kknn",Runs=5,method=c("kfold",3),search="heuristic5",f="s")
+KNN.r=fit(STATUS~.,d.r,model="kknn",search=KNNmine.r$mpar) 
+PKNN.r=predict(KNN.r,test.r)
 
 # Boosting
-d$STATUS <- as.factor(d$STATUS)
-test$STATUS <- as.factor(c(rep(1, 25),rep(-1,25)))
-BO <- boosting(STATUS ~ ., data = d, coeflearn="Zhu")
-PBOu <- (predict(BO, newdata=test, type="class"))$prob
-PBO=c(1:50)
-for(i in 1:length(PBOu[,1])) {
-    	PBO[i] <- ifelse(PBOu[i,1] < PBOu[i,2],PBOu[i,2]-PBOu[i,1],-(PBOu[i,1]-PBOu[i,2]))
+#d$STATUS <- as.factor(d$STATUS)
+
+test.n$STATUS <- as.factor(c(rep(1, length(test.n[[1]])/2),rep(-1,length(test.n[[1]])/2)))
+BO.n <- boosting(STATUS ~ ., data = d.n, coeflearn="Zhu")
+PBOu.n <- (predict(BO.n, newdata=test.n, type="class"))$prob
+PBO.n=c(1:length(PBOu.n[,1]))
+for(i in 1:length(PBOu.n[,1])) {
+    	PBO.n[i] <- ifelse(PBOu.n[i,1] < PBOu.n[i,2],PBOu.n[i,2]-PBOu.n[i,1],-(PBOu.n[i,1]-PBOu.n[i,2]))
 }
 
+test.r$STATUS <- as.factor(c(rep(1, length(test.r[[1]])/2),rep(-1,length(test.r[[1]])/2)))
+BO.r <- boosting(STATUS ~ ., data = d.r, coeflearn="Zhu")
+PBOu.r <- (predict(BO.r, newdata=test.r, type="class"))$prob
+PBO.r=c(1:length(PBOu.r[,1]))
+for(i in 1:length(PBOu.r[,1])) {
+    	PBO.r[i] <- ifelse(PBOu.r[i,1] < PBOu.r[i,2],PBOu.r[i,2]-PBOu.r[i,1],-(PBOu.r[i,1]-PBOu.r[i,2]))
+}
+
+PRF=c(1:50)
+PNN=c(1:50)
+PSVM=c(1:50)
+PBO=c(1:50)
+PKNN=c(1:50)
+PCIF=c(1:50)
+counter = 1
+i=1
+j=1
+while(counter<=50){
+	if((i<=length(test.n$ID) || j>length(test.r$ID)) && test.n$ID[i] < test.r$ID[j]){
+		PRF[counter]=PRF.n[i]
+		PNN[counter]=PNN.n[i]
+		PSVM[counter]=PSVM.n[i]
+		PBO[counter]=PBO.n[i]
+		PKNN[counter]=PKNN.n[i]
+		PCIF[counter]=PCIF.n[i]
+		i=i+1
+	}else{
+		PRF[counter]=PRF.r[j]
+		PNN[counter]=PNN.r[j]
+		PSVM[counter]=PSVM.r[j]
+		PBO[counter]=PBO.r[j]
+		PKNN[counter]=PKNN.r[j]
+		PCIF[counter]=PCIF.r[j]
+		j=j+1
+	}
+	counter=counter+1
+}
 
 
 # get the predictions:
