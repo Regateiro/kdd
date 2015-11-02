@@ -80,11 +80,22 @@ remove_outliers <- function(x, val, na.rm = TRUE, ...) {
 }
 
 attributes=colnames(d)[c(2:length(d))]
-#for(i in 1:length(attributes)){
-#	d[[attributes[i]]]=remove_outliers(d[[attributes[i]]], 0.05)
-#}
+d.r <- d
+for(i in 1:length(attributes)){
+	d.r[[attributes[i]]]=remove_outliers(d[[attributes[i]]], 0.05)
+}
 #remove outliers
-#d <- d[complete.cases(d), ]
+d.n <- d[complete.cases(d.r), ]
+d.o <- d[!complete.cases(d.r), ]
+
+test.r <- test
+for(i in 1:length(attributes)){
+	test.r[[attributes[i]]]=remove_outliers(test[[attributes[i]]], 0.05)
+}
+#remove outliers
+test.n <- test[complete.cases(test.r), ]
+test.o <- test[!complete.cases(test.r), ]
+
 #replace outliers
 #for(i in 1:length(attributes)){
 #	avg = mean(d[[attributes[i]]], na.rm=TRUE)
@@ -121,7 +132,7 @@ for(i in 1:length(PRFu[,1])) {
 
 # kNN
 KNNmine=mining(STATUS~.,d,model="kknn",Runs=5,method=c("kfold",3),search="heuristic5",f="s")
-KNN=fit(STATUS~.,d,model="kknn",search=KNNmine$mpar) 
+KNN=fit(STATUS~.,d,model="kknn",search=SVmine$mpar) 
 PKNN=predict(KNN,test)
 
 # Boosting
