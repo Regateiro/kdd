@@ -5,12 +5,26 @@ library(stringr)
 library(SnowballC)
 library(tm)
 
+###### VARIABLES ########
+file <- "wrs"    # 'fro', 'wr' or 'wrs'
+verbose <- TRUE  # TRUE outputs calculated sentiment
+#########################
+
+remove_stopwords <- function(comment) {
+   for(i in 1:length(stopwords())) {
+      comment <- str_replace_all(comment, paste("([^[:alnum:]]|^)",stopwords()[i],"([^[:alnum:]]|$)",sep=""), " ")
+   }
+   return(comment)
+}
+
 reviews <- read.csv("ReviewList.csv")
 
-pos.terms = read.csv("wr_pos_terms.txt", header = FALSE)
-neg.terms = read.csv("wr_neg_terms.txt", header = FALSE)
-pos.terms <- pos.terms[,1]
-neg.terms <- neg.terms[,1]
+pos.csv = read.csv(paste(file,"_pos_terms.txt",sep=""), header = FALSE, sep = ",")
+neg.csv = read.csv(paste(file,"_neg_terms.txt",sep=""), header = FALSE, sep = ",")
+pos.terms <- pos.csv[,1]
+neg.terms <- neg.csv[,1]
+pos.weigths <- pos.csv[,2]
+neg.weigths <- neg.csv[,2]
 
 for(i in 1:length(reviews[,1])) {
    t <- str_to_lower(reviews[i,3])
@@ -22,27 +36,29 @@ for(i in 1:length(reviews[,1])) {
    t <- str_split(t, "[ ]")[[1]]
    tStem <- wordStem(t, "english")
 
+   result <- 0
    sentiment <- 0
    for(j in 1:length(t)) {
-      if(t[j] %in% pos.terms || tStem[j] %in% pos.terms) {
-         sentiment <- sentiment + 1
-      } else if(t[j] %in% neg.terms || tStem[j] %in% neg.terms) {
-         sentiment <- sentiment - 1
+      if(t[j] %in% pos.terms) {
+         sentiment <- sentiment + pos.weigths[which(pos.terms == t[j])]
+      } else if(tStem[j] %in% pos.terms) {
+         sentiment <- sentiment + pos.weigths[which(pos.terms == tStem[j])]
+      } else if(t[j] %in% neg.terms) {
+         sentiment <- sentiment - neg.weigths[which(neg.terms == t[j])]
+      } else if(tStem[j] %in% neg.terms) {
+         sentiment <- sentiment - neg.weigths[which(neg.terms == tStem[j])]
       }
    }
 
    if(sentiment > 0) {
-      sentiment <- 1
+      result <- 1
    } else if(sentiment < 0) {
-      sentiment <- -1
+      result <- -1
    }
  
-   print(paste(sentiment,reviews[i,3],sep=" : "))
-}
-
-remove_stopwords <- function(comment) {
-   for(i in 1:length(stopwords())) {
-      comment <- str_replace_all(comment, paste("([^[:alnum:]]|^)",stopwords()[i],"([^[:alnum:]]|$)",sep=""), " ")
+   if(verbose) {
+      print(paste(result,"(",sentiment,"): ",reviews[i,3],sep=""))
+   } else {
+      print(paste(result,": ",reviews[i,3],sep=""))
    }
-   return(comment)
 }
