@@ -5,6 +5,9 @@ library(stringr)
 library(SnowballC)
 library(tm)
 
+#setwd('C:\\Users\\BlueMoon\\Documents\\GitHub\\kdd\\textMining')
+
+
 reviews <- read.csv("ReviewList.csv")
 
 pos.terms = read.csv("wr_pos_terms.txt", header = FALSE)
