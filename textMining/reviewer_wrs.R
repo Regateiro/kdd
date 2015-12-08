@@ -6,7 +6,7 @@ library(SnowballC)
 library(tm)
 
 ###### VARIABLES ########
-file <- "fro"    # 'fro', 'wr' or 'wrs'
+file <- "wrs"    # 'fro', 'wr' or 'wrs'
 verbose <- FALSE # TRUE outputs calculated sentiment
 threshold <- 0   # threashold for negative/positive decision
 #########################
