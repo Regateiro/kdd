@@ -24,8 +24,7 @@ stratHistoClass <- function(reviews, features, n=500){
 			if(!is.na(index)){
 				originalH = as.numeric(features[index,2:102])
 				#print(originalH)
-				histogram=histogram+originalH
-				#/sum(originalH)
+				histogram=histogram+originalH/sum(originalH)
 
 				#for(k in 1:101){
 				#	histogram[k]=histogram[k]+features[index,k+1]
@@ -52,31 +51,35 @@ createHistograms <- function(wordInfo, learnedScores){
 
 	for(i in 1:length(learnedScores)) {
 		histogram = rep(0, 101)
-
+		#histogramN = rep(0, 101)
 		for(j in 1:length(learnedScores[i][[1]])){
 			histogram[learnedScores[i][[1]][j]+1]=histogram[learnedScores[i][[1]][j]+1]+1
 		}
 		#print(histogram )
 
+		for(b in 2:102){ features[i,b]=0 }
 		# each point in the original histogram
 		for(b in 1:101){
 			if(histogram[b]!=0){
 				a=histogram[b]	#height
-				c=sd(learnedScores[i][[1]])+1	#sd
+				c=(sd(learnedScores[i][[1]])+1)/sqrt(length(unique(learnedScores[i][[1]])))	#sd
 				if(is.na(c)) c=0.1
 
 				#each point in the full histogram
 				for(x in 0:100){
-					features[i,x+2]=features[i,x+2]+( (a*exp(1))^( -(x-b)^2 / (2*c^2)) )
+					#histogramN[x+1]=( a*exp(1)^( -(x-b+1)^2 / (2*c^2)) )
+					features[i,x+2]=features[i,x+2]+( a*exp(1)^( -(x-b+1)^2 / (2*c^2)) )
 				}
 				#print(paste("with b=",b,"the histo goes",histogramN[1]))
 			}
+			
 		}
+		#plot(as.numeric(features[i,2:102]))
 		#print(histogramN)
 		#plot(histogramN)
 		print(i)
 	}
-	save(features, file="featuresHistogram.data")
+	save(features, file="featuresHistogramMod.data")
 }
 
 cleanAllReviews <- function(reviews) {
